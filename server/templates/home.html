@@ -1,0 +1,39 @@
+{% extends 'base.html' %}
+
+{% block title %}Kalendus{% endblock %}
+
+{% block head %}
+<link rel="stylesheet" type="text/css" href="{{ url_for('static', filename='home.css') }}" />
+<script data-main="static/main" src="{{ url_for('static', filename='require.js') }}"></script>
+{% endblock %}
+
+{% block body %}
+        <main class="flex-col">
+            <h1>Your Kalendus</h1>
+            
+            <section id="display" class="flex-col">
+                <h2>Display</h2>
+
+                {% if item %}
+                <div class="flex-row">
+                    <section>
+                        <p>Title: {{ item.title }}</p>
+                        <p>Description: {{ item.description }}</p>
+                        <p>Start Date: {{ item.start }}</p>
+                        <p>End Date: {{ item.end }}</p>
+                    </section>
+                </div>
+                {% endif %}
+            </section>
+
+            <section id="interact" class="flex-col">
+                <h2>Interact</h2>
+
+                <div class="flex-row">
+                    <button id="create">Create</button>
+                    <button id="update">Update</button>
+                    <button id="delete">Delete</button>
+                </div>
+            </section>
+        </main>
+{% endblock %}

@@ -1,0 +1,31 @@
+body {
+    padding: 1em 10em;
+}
+
+flex-col {
+    display: flex;
+    flex-direction: column;
+}
+
+flex-row {
+    display: flex;
+    flex-direction: row;
+}
+
+body h1 {
+    text-align: center;
+}
+
+body * {
+    padding: 1em;
+    outline: solid rgba(0, 0, 0, 0.247) 2px;
+    border-radius: 1em;
+}
+
+main section {
+    margin: 1em 0;
+}
+
+#interact button {
+    margin: 0.1em 1.5em;
+}
