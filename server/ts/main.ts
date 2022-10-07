@@ -24,8 +24,32 @@ function createClick() {
     }
 }
 
-function updateClick() {
+function updateClick(title: string) {
+    const description = prompt("New Description");
+    const start = prompt("New Start Date");
+    const end = prompt("New End Date");
+
+    const updatedItem: KALENDAR_ITEM = { "title": title };
+    if (description != null)
+        updatedItem.description = description;
+    if (start != null)
+        updatedItem.start = new Date(start);
+    if (end != null)
+        updatedItem.end = new Date(end);
     
+    fetch("/update", {
+        method: "PUT",
+        headers: {
+            "Content-Type": "application/json"
+        },
+        body: JSON.stringify(updatedItem)
+    }).then(res => {
+        if (res.status === 200) {
+            window.location.href = "/";
+        } else {
+            console.error(res.statusText);
+        }
+    });
 }
 
 function deleteClick(title: string) {
@@ -48,13 +72,16 @@ function init() {
     const createBtn = document.getElementById("create");
     if (createBtn)
         createBtn.onclick = createClick;
-    
-    const updateBtn = document.getElementById("update");
-    if (updateBtn)
-        updateBtn.onclick = updateClick;
+
+    const updateBtns = document.getElementsByClassName('updateBtn');
+    for (let updateBtn of updateBtns) {
+        const titleText = updateBtn.getAttribute("data-title");
+
+        if (titleText != null)
+            updateBtn.addEventListener("click", (e: Event) => updateClick(titleText));
+    }
     
     const deleteBtns = document.getElementsByClassName('deleteBtn');
-    console.log(deleteBtns);
 
     for (let deleteBtn of deleteBtns) {
         const titleText = deleteBtn.getAttribute("data-title");

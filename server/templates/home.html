@@ -21,6 +21,7 @@
                         <p>Description: {{ item.description }}</p>
                         <p>Start Date: {{ item.start }}</p>
                         <p>End Date: {{ item.end }}</p>
+                        <button data-title="{{ item.title }}" class="updateBtn">Update</button>
                         <button data-title="{{ item.title }}" class="deleteBtn">Delete <span aria-hidden="true" style="outline: none; padding: 0;">&times;</span></button>
                     </section>
                 {% endfor %}

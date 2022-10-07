@@ -1,12 +1,3 @@
-var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, generator) {
-    function adopt(value) { return value instanceof P ? value : new P(function (resolve) { resolve(value); }); }
-    return new (P || (P = Promise))(function (resolve, reject) {
-        function fulfilled(value) { try { step(generator.next(value)); } catch (e) { reject(e); } }
-        function rejected(value) { try { step(generator["throw"](value)); } catch (e) { reject(e); } }
-        function step(result) { result.done ? resolve(result.value) : adopt(result.value).then(fulfilled, rejected); }
-        step((generator = generator.apply(thisArg, _arguments || [])).next());
-    });
-};
 define("types", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
@@ -32,13 +23,34 @@ define("main", ["require", "exports"], function (require, exports) {
                     "Content-Type": "application/json"
                 },
                 body: JSON.stringify(newItem)
-            }).then(res => {
-                console.log(`Create Status: ${res.status}`);
-                window.location.href = "/";
-            });
+            }).then(res => window.location.href = "/");
         }
     }
-    function updateClick() {
+    function updateClick(title) {
+        const description = prompt("New Description");
+        const start = prompt("New Start Date");
+        const end = prompt("New End Date");
+        const updatedItem = { "title": title };
+        if (description != null)
+            updatedItem.description = description;
+        if (start != null)
+            updatedItem.start = new Date(start);
+        if (end != null)
+            updatedItem.end = new Date(end);
+        fetch("/update", {
+            method: "PUT",
+            headers: {
+                "Content-Type": "application/json"
+            },
+            body: JSON.stringify(updatedItem)
+        }).then(res => {
+            if (res.status === 200) {
+                window.location.href = "/";
+            }
+            else {
+                console.error(res.statusText);
+            }
+        });
     }
     function deleteClick(title) {
         fetch("/delete", {
@@ -57,21 +69,21 @@ define("main", ["require", "exports"], function (require, exports) {
         });
     }
     function init() {
-        return __awaiter(this, void 0, void 0, function* () {
-            const createBtn = document.getElementById("create");
-            if (createBtn)
-                createBtn.onclick = createClick;
-            const updateBtn = document.getElementById("update");
-            if (updateBtn)
-                updateBtn.onclick = updateClick;
-            const deleteBtns = document.getElementsByClassName('deleteBtn');
-            console.log(deleteBtns);
-            for (let deleteBtn of deleteBtns) {
-                const titleText = deleteBtn.getAttribute("data-title");
-                if (titleText != null)
-                    deleteBtn.addEventListener("click", (e) => deleteClick(titleText));
-            }
-        });
+        const createBtn = document.getElementById("create");
+        if (createBtn)
+            createBtn.onclick = createClick;
+        const updateBtns = document.getElementsByClassName('updateBtn');
+        for (let updateBtn of updateBtns) {
+            const titleText = updateBtn.getAttribute("data-title");
+            if (titleText != null)
+                updateBtn.addEventListener("click", (e) => updateClick(titleText));
+        }
+        const deleteBtns = document.getElementsByClassName('deleteBtn');
+        for (let deleteBtn of deleteBtns) {
+            const titleText = deleteBtn.getAttribute("data-title");
+            if (titleText != null)
+                deleteBtn.addEventListener("click", (e) => deleteClick(titleText));
+        }
     }
     window.onload = init;
 });
