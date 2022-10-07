@@ -14,7 +14,6 @@ define("types", ["require", "exports"], function (require, exports) {
 define("main", ["require", "exports"], function (require, exports) {
     "use strict";
     Object.defineProperty(exports, "__esModule", { value: true });
-    let allItems = [];
     function createClick() {
         const title = prompt("Title");
         const description = prompt("Description");
@@ -41,24 +40,37 @@ define("main", ["require", "exports"], function (require, exports) {
     }
     function updateClick() {
     }
-    function deleteClick() {
-    }
-    function loadItems() {
-        return __awaiter(this, void 0, void 0, function* () {
+    function deleteClick(title) {
+        fetch("/delete", {
+            method: 'DELETE',
+            body: JSON.stringify(title),
+            headers: {
+                "Content-Type": "application/json"
+            }
+        }).then(response => {
+            if (response.status === 200) {
+                window.location.href = "/";
+            }
+            else {
+                console.error(response.statusText);
+            }
         });
     }
     function init() {
         return __awaiter(this, void 0, void 0, function* () {
-            yield loadItems();
             const createBtn = document.getElementById("create");
             if (createBtn)
                 createBtn.onclick = createClick;
             const updateBtn = document.getElementById("update");
             if (updateBtn)
                 updateBtn.onclick = updateClick;
-            const deleteBtn = document.getElementById("delete");
-            if (deleteBtn)
-                deleteBtn.onclick = deleteClick;
+            const deleteBtns = document.getElementsByClassName('deleteBtn');
+            console.log(deleteBtns);
+            for (let deleteBtn of deleteBtns) {
+                const titleText = deleteBtn.getAttribute("data-title");
+                if (titleText != null)
+                    deleteBtn.addEventListener("click", (e) => deleteClick(titleText));
+            }
         });
     }
     window.onload = init;
