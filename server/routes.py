@@ -1,3 +1,4 @@
+from datetime import datetime
 import json
 import os
 from flask import Blueprint, render_template, request
@@ -15,6 +16,15 @@ def read():
             jsonDataString = file.read()
             if len(jsonDataString) > 0:
                 calendar_items = json.loads(jsonDataString)
+
+    for item in calendar_items:
+        item["start"] = datetime.strptime(
+            item["start"].split(".")[0], "%Y-%m-%dT%H:%M:%S"
+        ).strftime("%d.%m.%Y")
+
+        item["end"] = datetime.strptime(
+            item["end"].split(".")[0], "%Y-%m-%dT%H:%M:%S"
+        ).strftime("%d.%m.%Y")
 
     return render_template("home.html", items=calendar_items)
 
@@ -49,7 +59,32 @@ def create():
 
 @routes.route("/update", methods=["PUT"])
 def update():
-    pass
+    if request.content_length > 0:
+        updatedItem = request.json
+        fileData: list = []
+
+        with open(filepath, "r") as file:
+            fileContents = file.read()
+            if len(fileContents) > 0:
+                fileData = json.loads(fileContents)
+
+        for item in fileData:
+            if item["title"] == updatedItem["title"]:
+                if "description" in updatedItem:
+                    item["description"] = updatedItem["description"]
+                if "start" in updatedItem:
+                    item["start"] = updatedItem["start"]
+                if "end" in updatedItem:
+                    item["end"] = updatedItem["end"]
+
+                with open(filepath, "w") as file:
+                    file.write(json.dumps(fileData, indent=2))
+
+                return Response("", status=200)
+
+        return Response("", status=404)
+    else:
+        return Response("", status=400)
 
 
 @routes.route("/delete", methods=["DELETE"])
