@@ -1,7 +1,5 @@
 import { KALENDAR_ITEM } from "./types";
 
-let allItems: KALENDAR_ITEM[] = [];
-
 function createClick() {
     const title = prompt("Title");
     const description = prompt("Description");
@@ -22,10 +20,7 @@ function createClick() {
                 "Content-Type": "application/json"
             },
             body: JSON.stringify(newItem)
-        }).then(res => {
-            console.log(`Create Status: ${res.status}`);
-            window.location.href = "/";
-        });
+        }).then(res => window.location.href = "/" );
     }
 }
 
@@ -33,17 +28,23 @@ function updateClick() {
     
 }
 
-function deleteClick() {
-    
+function deleteClick(title: string) {
+    fetch("/delete", {
+        method: 'DELETE',
+        body: JSON.stringify(title),
+        headers: {
+            "Content-Type": "application/json"
+        }
+    }).then(response => {
+        if (response.status === 200) {
+            window.location.href = "/";
+        } else {
+            console.error(response.statusText)
+        }
+    });
 }
 
-async function loadItems() {
-
-}
-
-async function init() {
-    await loadItems();
-
+function init() {
     const createBtn = document.getElementById("create");
     if (createBtn)
         createBtn.onclick = createClick;
@@ -52,9 +53,15 @@ async function init() {
     if (updateBtn)
         updateBtn.onclick = updateClick;
     
-    const deleteBtn = document.getElementById("delete");
-    if (deleteBtn)
-        deleteBtn.onclick = deleteClick;
+    const deleteBtns = document.getElementsByClassName('deleteBtn');
+    console.log(deleteBtns);
+
+    for (let deleteBtn of deleteBtns) {
+        const titleText = deleteBtn.getAttribute("data-title");
+
+        if (titleText != null)
+            deleteBtn.addEventListener("click", (e: Event) => deleteClick(titleText));
+    }
 }
 
 window.onload = init;

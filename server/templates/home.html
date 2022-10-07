@@ -14,16 +14,17 @@
             <section id="display" class="flex-col">
                 <h2>Display</h2>
 
-                {% if item %}
                 <div class="flex-row">
+                {% for item in items %}
                     <section>
                         <p>Title: {{ item.title }}</p>
                         <p>Description: {{ item.description }}</p>
                         <p>Start Date: {{ item.start }}</p>
                         <p>End Date: {{ item.end }}</p>
+                        <button data-title="{{ item.title }}" class="deleteBtn">Delete <span aria-hidden="true" style="outline: none; padding: 0;">&times;</span></button>
                     </section>
+                {% endfor %}
                 </div>
-                {% endif %}
             </section>
 
             <section id="interact" class="flex-col">
@@ -31,8 +32,6 @@
 
                 <div class="flex-row">
                     <button id="create">Create</button>
-                    <button id="update">Update</button>
-                    <button id="delete">Delete</button>
                 </div>
             </section>
         </main>
